@@ -1,0 +1,103 @@
+<link rel="import" href="../polymer/polymer.html">
+
+<!--
+<h2>
+<span>barcode-scanner-input</span>
+<span class="version">0.1.0</span>
+</h2>
+`<barcode-scanner-input>`
+Custom Element to parse barcodes from hardware barcode scanners that output keypresses.
+
+@demo demo/index.html 
+-->
+<dom-module id="barcode-scanner-input">
+  <script>
+    (function() {
+      Polymer({
+        is: 'barcode-scanner-input',
+        properties: {
+          /**
+           * Fired when a valid barcode is detected.
+           *
+           * @event barcode
+           * @param {String} barcode The barcode.
+           */
+          /**
+           * Fired when an invalid barcode is detected.
+           *
+           * @event invalid-barcode
+           * @param {String} keypresses The detected string.
+           */
+          /** Holds last valid barcode. */
+          code: {
+            type: String,
+            notify: true,
+            readOnly: true
+          },
+          /** barcodes are validated against this regex. */
+          validateRegex: {
+            type: String,
+            value: '/^[0-9-]+$/',
+            observer: '_onRegexChange'
+          },
+          /** If disabled, the elment won't process keypresses. */
+          disabled: {
+            type: Boolean,
+            value: false,
+            reflectToAttribute: true,
+            observer: '_onDisabled'
+          },
+          /** Timeout to wait between keypresses.  */
+          timeout: {
+            type: Number,
+            value: 100
+          }
+        },
+        ready: function() {
+          this.TIMER = setTimeout(function() {}, 0);
+          this._curCode = '';
+          window.addEventListener('keyup', this._handleKeyEvent.bind(this));
+        },
+        /** Helper function that clears last valid barcode. */
+        clear: function() {
+          this.setCode('');
+        },
+        /** Helper function that enables the element. */
+        enable: function () {
+          this.set('disabled', false);
+        },
+        /** Helper function that disables the element. */
+        disable: function () {
+          this.set('disabled', true);
+        },
+        _onRegexChange: function(regexStr) {
+          var values = regexStr.split('/'),
+            regex = values[1],
+            modifiers = values[2];
+          this._regex = new RegExp(regex, modifiers);
+        },
+        _onDisabled: function(disabled) {
+          this._curCode = '';
+        },
+        _handleKeyEvent: function(event) {
+          if (this.disabled) return;
+          clearTimeout(this.TIMER);
+          this.TIMER = setTimeout(this._validate.bind(this), this.timeout);
+          if (event.keyCode < 31) return;
+          this._curCode += event.key;
+        },
+        _validate: function() {
+          if (this.disabled) return;
+          if (this._curCode.match(this._regex)) {
+            this._setCode(this._curCode);
+            this.fire('barcode', this._curCode);
+          } else {
+            this.fire('invalid-barcode', this._curCode);
+            this._setCode('');
+          }
+          this._curCode = '';
+        }
+      });
+    })();
+  </script>
+</dom-module>
