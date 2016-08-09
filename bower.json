@@ -1,8 +1,11 @@
 {
   "name": "barcode-scanner-input",
   "description": "Custom Element to parse barcodes from hardware barcode scanners that output keypresses.",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "barcode-scanner-input.html",
+  "keywords": [
+    "web-components"
+  ],
   "dependencies": {
     "polymer": "Polymer/polymer#^1.4.0"
   }
