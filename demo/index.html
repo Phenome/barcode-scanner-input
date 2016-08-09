@@ -1,0 +1,60 @@
+<!doctype html>
+<html>
+  <head>
+    <title>barcode-scanner-input demo</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
+    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+
+    <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
+    <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+
+    <link rel="import" href="../../paper-toast/paper-toast.html">
+    <link rel="import" href="../barcode-scanner-input.html">
+
+    <style is="custom-style" include="demo-pages-shared-styles">
+    </style>
+  </head>
+  <body>
+    
+    <dom-module id="x-demo">
+      <template>
+        <barcode-scanner-input 
+          on-barcode="handleBarcode"
+          on-invalid-barcode="handleError">
+        </barcode-scanner-input>
+        <paper-toast id="toast">
+        </paper-toast>
+      </template>
+      <script>
+        Polymer({
+          is: 'x-demo',
+          handleBarcode: function(event) {
+            this.$.toast.text = "Barcode: "+event.detail;
+            this.$.toast.show();
+          },
+          handleError: function(event) {
+            this.$.toast.text = "INVALID Barcode: "+event.detail;
+            this.$.toast.show();
+          }
+        });
+      </script>
+    </dom-module>
+    
+    <div class="vertical-section-container centered">
+      <h3>Basic barcode-scanner-input Demo</h3>
+      <demo-snippet>
+        <span>Scan a barcode to test<br/>
+        You'll maybe have to click on this card to focus this demo &lt;iframe&gt;
+        </span>
+        <template>
+          <barcode-scanner-input 
+            on-barcode="handleBarcode"
+            on-invalid-barcode="handleError">
+          </barcode-scanner-input>
+        </template>
+      </demo-snippet>
+      <x-demo></x-demo>
+    </div>
+  </body>
+</html>
